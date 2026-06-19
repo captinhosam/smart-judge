@@ -1,0 +1,6 @@
+{
+  "name": "نظام الوكلاء القضائي",
+  "description": "منصة ذكية متكاملة لإدارة وتشغيل وكلاء القضاء والأراضي والأوقاف والبيانات والخرائط لتسوية النزاعات والمعاملات.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

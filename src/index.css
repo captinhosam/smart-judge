@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Cairo", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+html, body {
+  font-family: "Cairo", "Inter", sans-serif;
+  direction: rtl;
+  text-align: right;
+  overflow-x: hidden;
+  background-color: #09090b; /* bg-zinc-950 */
+}
+
+/* Custom scrollbars for the sidebars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+@keyframes sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.radar-sweep {
+  animation: sweep 8s linear infinite;
+}
+
+/* Legal seal effect */
+.legal-seal {
+  background: radial-gradient(circle, transparent 60%, rgba(220, 38, 38, 0.1) 62%, rgba(220, 38, 38, 0.4) 65%, transparent 70%);
+}
+
