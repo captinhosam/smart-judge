@@ -128,7 +128,7 @@ const HISTORY_MILESTONES: Record<number, {
 
 export default function App() {
   // Navigation & Workspace states
-  const [activeCase, setActiveCase] = useState<"dispute" | "hadayek">("hadayek");
+  const [activeCase, setActiveCase] = useState<"dispute" | "hadayek" | "orouba">("orouba");
   const [currentWorkspace, setCurrentWorkspace] = useState<"General" | "Modeling" | "JudicialExpert">("General");
   const [activeShelf, setActiveShelf] = useState<"judicial" | "prosecution" | "interior" | "smith" | "favorites">("smith");
   const [activeRightTab, setActiveRightTab] = useState<"attribute" | "channel" | "aiConsultant" | "drive">("attribute");
@@ -149,6 +149,47 @@ export default function App() {
   const [favorites, setFavorites] = useState<string[]>(["LandRegistryAgent", "InheritanceAgent", "WaqfRegistrationAgent"]);
 
   const getCurrentAgentOutput = () => {
+    if (activeCase === "orouba") {
+      const oroubaOutputs: Record<string, any> = {
+        "LandRegistryAgent": {
+          "رقم قطعة الأرض المساحي": "الكود المساحي ١٤٢ (شارع العروبة الرئيسي الهرم)",
+          "رقم السجل العقاري للشقة": "غير مسجلة نهائياً بالشهر العقاري (عقود عرفية متتالية وصية وصحة توقيع فقط)",
+          "القرابة وعقد البائع": "تسلسل ملكية معقد يبدأ بعقد سنة ١٩٩٥، تلاه عقد بيع ٢٠١٧ من محمد دسوقي إبراهيم إلى المشتري إبراهيم عبد الرحمن درويش، ودعوى صحة توقيع سنة ٢٠٢٠ بين ورثة درويش.",
+          "المساحة المقيدة بالعقد": "١٤٠ متر مربع (تشمل العفش الفعلي والتحميل)",
+          "موقف التسجيل للشهر العقاري": "غير قابل للتسجيل العقاري المباشر لعدم انتظام تسلسل العقود المسجلة بالشهر العقاري وبسبب مخالفة البناء وعدم توفر تصالح."
+        },
+        "LandValuationAgent": {
+          "السعر الحالي في العرض": "١,٧٥٠,٠٠٠ ج.م (شاملاً العفش والأثاث)",
+          "سعر المتر بالعرض": "١٢,٥٠٠ ج.م / م٢ (مغرٍ استثمارياً بسبب وجود الأثاث الفعلي)",
+          "التقييم المقدر لشارع العروبة الرئيسي": "متوسط سعر المتر العادل هناك للشقق المكتملة بالتصالح والخدمات هو بين ١٤,٠٠٠ و ١٦,٠٠٠ ج.م للمتر المماثل. يعتبر ١,٧٥٠,٠٠٠ ج.م منخفضاً بـ ٢٥٪ تراجعاً مبرراً بوجود الخطر القانوني.",
+          "مخاطر غياب التصالح على السعر": "تجميد القيمة وغرامات قانون التصالح رقم ١٨٧ لسنة ٢٠٢٣ قد تلتهم كامل المنفعة السعرية إذا تطلب الأمر مبالغ تسوية ضخمة للحي ومصرف عمارة عشوائي."
+        },
+        "LandUsePlannerAgent": {
+          "الاستخدام المرخص بالبلدية": "سكني لشارع العروبة، ولكن العقار بالكامل بدون رخصة بناء رسمية أو مطابقة إنشائية معتمدة.",
+          "مخالفة الارتفاع أو الاستخدام": "خطير جداً - الشقة تقع بالدور الخامس بدون وجود تصالح نهائي حتى الآن مع حي الطالبية ومجلس مدينة الجيزة وجدية التصالح معلقة.",
+          "تأثير الشارع والمحولات": "تقع الشقة على شارع العروبة الرئيسي منطقة المحولات مباشرة عند كشري الإخوة. موقع حيوي وتجاري ممتاز، ولكنه يعاني من ضوضاء محولات الضغط والازدحام المروري الدائم وحرم الكهرباء."
+        },
+        "ContractAnalyzerAgent": {
+          "حالة فحص بنود عقود الصفقة": "تم التحليل الكامل لعقد البيع لسنة ٢٠١٧ ومضاهاة الأحكام القضائية وصيغة دعاوى صحة التوقيع المرفقة.",
+          "ملاحظات خطيرة وثغرات": [
+            "١. مخالفة صريحة للدور الخامس: غياب رخص البناء وغياب كود التصالح بالحي يعني منع نقل العدادات الكارثية رسمياً باسم المشتري وصعوبة تسييل العقار مستقبلاً.",
+            "٢. تضارب قضايا صحة التوقيع: حكم صحة التوقيع الصادر في القضية رقم ١١٤٦٥ لسنة ٢٠١٧ العمرانية، بالتوازي مع دعوى صحة توقيع السيدة إنسان أحمد درويش لعام ٢٠٢٠ يثبت وجود تداخل في الحيازة العائلية وتناقض العقود العرفية بين الورثة.",
+            "٣. غياب الأصول التاريخية: لا يوجد أصل موثق لعقد شراء ١٩٩٥ من أحمد دسوقي مما يضعف حجية ملكية محمد دسوقي إبراهيم البائع الأول لتصرفات ٢٠١٧."
+          ],
+          "التوصية القانونية الفورية": "مخاطرة شديدة وغير آمنة للشراء. التوصية بعدم الشراء إلا بشرط خصم أو تعليق نصف القيمة المالية لحين قيام البائع باستكمال إجراءات نموذج التصالح النهائي المعلم."
+        },
+        "LegalResearchAgent": {
+          "التحليل التشريعي العقاري": "تعتبر هذه المنطقة خاضعة لرقابة بلدية حي الطالبية بمحافظة الجيزة. القرارات الوزارية الحديثة تمنع إدخال أو تحويل عدادات المرافق والخدمات (كهرباء كرت/مياه مستقلة) بدون تقديم ما يفيد قبول التصالح النهائي.",
+          "سوابق قضائية وأحكام صحة التوقيع": "حكم صحة التوقيع بموجب المادة ٤٥ من قانون الإثبات هو إجراء تحفظي لتأمين ورق التوقيع فقط، ولا يثبت ملكية عينية ولا يحسم نزاع حقيقي ضد ادعاءات الورثة المسجلة."
+        },
+        "JudgmentAgent": {
+          "التوصية واتخاذ القرار": "لا ننصح بالشراء إطلاقاً في الوضع الراهن بسبب عوار الملكية وغياب التصالح (معدل أمان ٣٥٪ فقط)",
+          "مبررات التوصية": "١. تعقيد نزاعات صحة التوقيع لعامي ٢٠١٧ و ٢٠٢٠ يظهر خطراً كبيراً في أحقية الحيازة وتنازع عائلة درويش. ٢. 'عدم وجود تصالح' للدور الخامس يمنع توثيق الشقة رسمياً ويغلق الباب أمام نقل العدادات باسم المشتري بشكل رسمي.",
+          "الخطوات المطلوبة لحماية المشتري في حال الإصرار": "١. تأمين عقد بيع ثلاثي موقع من كافة ورثة عائلة درويش المدرجة أسماؤهم بقضية صحة التوقيع ٢٠٢٠. ٢. تحميل البائع تكلفة التصالح القانوني مخصوماً من ثمن الشقة وربط دفعة الاستلام بالحصول على رخصة الأشغال وموافقة الحي."
+        }
+      };
+      return oroubaOutputs[selectedAgent.key] || selectedAgent.mockOutput || {};
+    }
     if (activeCase === "hadayek") {
       const hadayekOutputs: Record<string, any> = {
         "LandRegistryAgent": {
@@ -933,43 +974,43 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#edeef2] text-zinc-800 flex flex-col font-sans select-none overflow-x-hidden text-[12px]">
+    <div className="min-h-screen bg-[#cbd2e1] motif-desktop-bg text-zinc-900 flex flex-col font-sans select-none overflow-x-hidden text-[12px] p-2 gap-2">
       
-      {/* ================= 1. AUTODESK MAYA MENU BAR (Top Belt) ================= */}
-      <div className="bg-[#dfe1e6] border-b border-[#c5c8cf] h-9 px-3 flex items-center justify-between z-40 select-none text-zinc-800">
-        <div className="flex items-center gap-1">
-          {/* Autodesk Brand Mark logo */}
-          <div className="w-5 h-5 bg-[#d49911] text-white font-black flex items-center justify-center rounded text-[11px] font-mono tracking-tighter mr-1">
+      {/* ================= 1. RETRO MENU BAR (Top Belt) ================= */}
+      <div className="bg-[#dfe1ec] border-2 border-t-white border-l-white border-r-[#7b7e95] border-b-[#7b7e95] h-10 px-3 flex items-center justify-between z-40 select-none text-zinc-900 shadow-[1px_1px_2px_rgba(0,0,0,0.15)] m-1">
+        <div className="flex items-center gap-1.5">
+          {/* Autodesk Brand Mark logo - retro styled */}
+          <div className="w-5 h-5 bg-[#4d517c] text-white font-black flex items-center justify-center border border-black shadow-[inset_1px_1px_0_#fff] text-[11px] font-mono mr-1">
             M
           </div>
           
           {/* Menu set Dropdown selection matching Autodesk design */}
           <div className="relative group mr-2">
-            <button className="bg-white hover:bg-zinc-50 text-amber-700 font-bold px-3 py-1 rounded border border-zinc-300 flex items-center gap-1.5 cursor-pointer text-[11px]">
+            <button className="bg-[#dfe1ec] hover:bg-zinc-100 text-zinc-900 font-bold px-3 py-1 border border-black shadow-[inset_1.5px_1.5px_0_#fff] flex items-center gap-1.5 cursor-pointer text-[11px]">
               {activeShelf === "judicial" ? "القرارات القضائية" : 
                activeShelf === "prosecution" ? "التحقيق والنيابة" :
                activeShelf === "interior" ? "الشؤون الجنائية" : "غرفة الخبير سميث (المساحة والقانون)"}
-              <ChevronDown className="w-3 h-3 text-zinc-505" />
+              <ChevronDown className="w-3 h-3 text-zinc-700" />
             </button>
-            <div className="absolute hidden group-hover:flex flex-col bg-white border border-zinc-200 rounded-md shadow-xl py-1 right-0 top-7 w-56 z-50 text-right text-zinc-700">
-              <button onClick={() => { setActiveShelf("smith"); setJudgeActivePage(3); }} className="px-4 py-1.5 text-zinc-750 hover:bg-zinc-100 hover:text-black text-right border-b border-zinc-100">رف الخبير سميث (المساحة والهندسة)</button>
-              <button onClick={() => { setActiveShelf("judicial"); setJudgeActivePage(3); }} className="px-4 py-1.5 text-zinc-750 hover:bg-zinc-100 hover:text-black text-right border-b border-zinc-100">الرف القضائي (إصدار الأحكام)</button>
-              <button onClick={() => { setActiveShelf("prosecution"); setJudgeActivePage(4); }} className="px-4 py-1.5 text-zinc-750 hover:bg-zinc-100 hover:text-black text-right border-b border-zinc-100">رف النيابة العامة (التحقيقات)</button>
-              <button onClick={() => { setActiveShelf("interior"); setJudgeActivePage(5); }} className="px-4 py-1.5 text-zinc-750 hover:bg-zinc-100 hover:text-black text-right">رف الداخلية (محاضر الشرطة)</button>
+            <div className="absolute hidden group-hover:flex flex-col bg-[#dfe1ec] border border-black shadow-xl py-1 right-0 top-7 w-56 z-50 text-right text-zinc-800">
+              <button onClick={() => { setActiveShelf("smith"); setJudgeActivePage(3); }} className="px-4 py-1.5 text-zinc-800 hover:bg-[#4d517c] hover:text-white text-right border-b border-zinc-300">رف الخبير سميث (المساحة والهندسة)</button>
+              <button onClick={() => { setActiveShelf("judicial"); setJudgeActivePage(3); }} className="px-4 py-1.5 text-zinc-800 hover:bg-[#4d517c] hover:text-white text-right border-b border-zinc-300">الرف القضائي (إصدار الأحكام)</button>
+              <button onClick={() => { setActiveShelf("prosecution"); setJudgeActivePage(4); }} className="px-4 py-1.5 text-zinc-800 hover:bg-[#4d517c] hover:text-white text-right border-b border-zinc-300">رف النيابة العامة (التحقيقات)</button>
+              <button onClick={() => { setActiveShelf("interior"); setJudgeActivePage(5); }} className="px-4 py-1.5 text-zinc-800 hover:bg-[#4d517c] hover:text-white text-right">رف الداخلية (محاضر الشرطة)</button>
             </div>
           </div>
 
           {/* Standard menus */}
-          <div className="hidden md:flex items-center gap-3 text-zinc-650 text-[11px] px-2 font-medium">
-            <span className="hover:text-black cursor-pointer px-1 py-0.5">File</span>
-            <span className="hover:text-black cursor-pointer px-1 py-0.5">Edit</span>
-            <span className="hover:text-black cursor-pointer px-1 py-0.5">Create</span>
-            <span className="hover:text-black cursor-pointer px-1 py-0.5">Select</span>
-            <span className="hover:text-black cursor-pointer px-1 py-0.5">Modify</span>
-            <span className="hover:text-black cursor-pointer px-1 py-0.5">Display</span>
-            <span className="hover:text-black cursor-pointer px-1 py-0.5">Windows</span>
-            <span className="hover:text-amber-700 cursor-pointer px-1 py-0.5 font-bold flex items-center gap-1 text-amber-600">
-              <Sparkles className="w-3 h-3 text-amber-600" />
+          <div className="hidden md:flex items-center gap-3 text-zinc-750 text-[11px] px-2 font-bold">
+            <span className="hover:bg-[#4d517c] hover:text-white cursor-pointer px-2 py-0.5 border border-transparent hover:border-black">File</span>
+            <span className="hover:bg-[#4d517c] hover:text-white cursor-pointer px-2 py-0.5 border border-transparent hover:border-black">Edit</span>
+            <span className="hover:bg-[#4d517c] hover:text-white cursor-pointer px-2 py-0.5 border border-transparent hover:border-black">Create</span>
+            <span className="hover:bg-[#4d517c] hover:text-white cursor-pointer px-2 py-0.5 border border-transparent hover:border-black">Select</span>
+            <span className="hover:bg-[#4d517c] hover:text-white cursor-pointer px-2 py-0.5 border border-transparent hover:border-black">Modify</span>
+            <span className="hover:bg-[#4d517c] hover:text-white cursor-pointer px-2 py-0.5 border border-transparent hover:border-black">Display</span>
+            <span className="hover:bg-[#4d517c] hover:text-white cursor-pointer px-2 py-0.5 border border-transparent hover:border-black">Windows</span>
+            <span className="text-amber-800 cursor-pointer px-2 py-0.5 font-black flex items-center gap-1 border border-transparent">
+              <Sparkles className="w-3 h-3 text-amber-700" />
               مستندات الحكم
             </span>
           </div>
@@ -978,8 +1019,8 @@ export default function App() {
         {/* Top-Right Workspaces & API triggers */}
         <div className="flex items-center gap-2">
           {/* Case Selector Dropdown */}
-          <div className="flex items-center gap-1">
-            <span className="text-[10px] text-zinc-650 font-bold">الملف القضائي النشط:</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] text-zinc-700 font-bold">الملف القضائي النشط:</span>
             <select
               value={activeCase}
               onChange={(e: any) => {
@@ -992,6 +1033,13 @@ export default function App() {
                     translateY: -31.11,
                     translateZ: 0.00
                   }));
+                } else if (choice === 'orouba') {
+                  setTransforms(prev => ({
+                    ...prev,
+                    translateX: 29.98,
+                    translateY: -31.17,
+                    translateZ: 0.00
+                  }));
                 } else {
                   setTransforms(prev => ({
                     ...prev,
@@ -1001,22 +1049,23 @@ export default function App() {
                   }));
                 }
               }}
-              className="bg-zinc-900 text-amber-400 border border-amber-500/35 rounded px-2 py-0.5 outline-none text-[11px] focus:ring-1 focus:ring-amber-500 font-bold"
+              className="bg-[#242533] text-amber-400 border border-black px-2 py-0.5 outline-none text-[11px] font-bold focus:ring-1 focus:ring-[#4d517c]"
             >
-              <option value="dispute" className="text-zinc-200">قضية التعدي الحيازي - بلوك ٣٠١٩ (القاهرة الجديدة)</option>
-              <option value="hadayek" className="text-amber-400 font-extrabold">✨ تقييم شراء شقة بحديقة - قطعة ٧٢ ز (حدائق الأهرام)</option>
+              <option value="orouba" className="text-amber-400 font-extrabold bg-[#242533]">🏢 تقييم صفقة شقة العروبة والمحولات - الهرم (الجيزة)</option>
+              <option value="hadayek" className="text-zinc-200 bg-[#242533]">✨ تقييم شراء شقة بحديقة - قطعة ٧٢ ز (حدائق الأهرام)</option>
+              <option value="dispute" className="text-zinc-200 bg-[#242533]">قضية التعدي الحيازي - بلوك ٣٠١٩ (القاهرة الجديدة)</option>
             </select>
           </div>
 
-          <div className="w-px h-5 bg-zinc-300 mx-1"></div>
+          <div className="w-px h-5 bg-zinc-400 mx-1"></div>
 
           {/* Workspace select */}
-          <div className="flex items-center gap-1">
-            <span className="text-[10px] text-zinc-500 font-medium">مظهر بيئة العمل:</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] text-zinc-700 font-bold">مظهر بيئة العمل:</span>
             <select
               value={currentWorkspace}
               onChange={(e: any) => setCurrentWorkspace(e.target.value)}
-              className="bg-white text-zinc-800 border border-zinc-300 rounded px-1.5 py-0.5 outline-none text-[11px] focus:ring-1 focus:ring-amber-500"
+              className="bg-white text-zinc-800 border border-zinc-400 px-1.5 py-0.5 outline-none text-[11px] focus:ring-1 focus:ring-[#4d517c]"
             >
               <option value="General">حصر الأراضي والتركات (الافتراضي)</option>
               <option value="Modeling">التصميم الإنشائي والمخططات</option>
@@ -1024,12 +1073,12 @@ export default function App() {
             </select>
           </div>
 
-          <div className="w-px h-5 bg-zinc-300 mx-1"></div>
+          <div className="w-px h-5 bg-zinc-400 mx-1"></div>
 
           {/* Real Google map setup trigger */}
           <button 
             onClick={() => setShowKeyForm(true)}
-            className="px-2.5 py-0.5 bg-white hover:bg-zinc-100 text-zinc-700 hover:text-black border border-zinc-300 rounded text-[10px] flex items-center gap-1 transition-colors animate-pulse font-medium shadow-sm"
+            className="motif-button px-2.5 py-1 text-[10px] flex items-center gap-1 font-bold shadow-sm"
           >
             <Key className="w-2.5 h-2.5 text-amber-500" />
             تحويل لخرائط جوجل الفعالة
@@ -1037,16 +1086,16 @@ export default function App() {
         </div>
       </div>
 
-      {/* ================= 2. AUTODESK MAYA SHELVES BAR (Tabs and Shortcuts) ================= */}
-      <div className="bg-[#e3e5ea] border-b border-zinc-300 py-1 flex flex-col z-30 select-none">
+      {/* ================= 2. RETRO SHELVES BAR (Tabs and Shortcuts) ================= */}
+      <div className="bg-[#dfe1ec] border-2 border-t-white border-l-white border-r-[#7b7e95] border-b-[#7b7e95] py-1 flex flex-col z-30 select-none m-1">
         {/* Shelf tab strip */}
-        <div className="flex items-center px-4 gap-1.5 border-b border-zinc-300 overflow-x-auto">
+        <div className="flex items-center px-4 gap-1 border-b border-zinc-400 overflow-x-auto">
           <button 
             onClick={() => { setActiveShelf("smith"); setJudgeActivePage(3); }}
-            className={`px-3 py-1.5 font-bold text-[11px] rounded-t-md transition-all shrink-0 cursor-pointer border-t border-x ${
+            className={`px-3 py-1 font-bold text-[11px] transition-all shrink-0 cursor-pointer border-t border-x ${
               activeShelf === "smith" 
-                ? "bg-amber-100 text-amber-800 border-amber-400 shadow-[0_-2px_0_#d97706]" 
-                : "bg-zinc-200/50 border-transparent text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200"
+                ? "bg-[#dfe1ec] text-[#4d517c] border-t-black border-x-black border-b-transparent shadow-[0_-2px_0_#4d517c] font-black" 
+                : "bg-[#cbd2e1] border-zinc-400 text-zinc-650 hover:text-zinc-900"
             }`}
           >
             📚 رف الخبير سميث (المساحة والهندسة والتشريع)
@@ -1054,10 +1103,10 @@ export default function App() {
           
           <button 
             onClick={() => { setActiveShelf("judicial"); setJudgeActivePage(3); }}
-            className={`px-3 py-1.5 font-bold text-[11px] rounded-t-md transition-all shrink-0 cursor-pointer border-t border-x ${
+            className={`px-3 py-1 font-bold text-[11px] transition-all shrink-0 cursor-pointer border-t border-x ${
               activeShelf === "judicial" 
-                ? "bg-emerald-100 text-emerald-800 border-emerald-400 shadow-[0_-2px_0_#059669]" 
-                : "bg-zinc-200/50 border-transparent text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200"
+                ? "bg-[#dfe1ec] text-[#4d517c] border-t-black border-x-black border-b-transparent shadow-[0_-2px_0_#4d517c] font-black" 
+                : "bg-[#cbd2e1] border-zinc-400 text-zinc-650 hover:text-zinc-900"
             }`}
           >
             ⚖️ الرف القضائي (القاضي - ص٣)
@@ -1065,10 +1114,10 @@ export default function App() {
 
           <button 
             onClick={() => { setActiveShelf("prosecution"); setJudgeActivePage(4); }}
-            className={`px-3 py-1.5 font-bold text-[11px] rounded-t-md transition-all shrink-0 cursor-pointer border-t border-x ${
+            className={`px-3 py-1 font-bold text-[11px] transition-all shrink-0 cursor-pointer border-t border-x ${
               activeShelf === "prosecution" 
-                ? "bg-sky-105 text-sky-850 bg-sky-100 border-sky-450 shadow-[0_-2px_0_#0284c7]" 
-                : "bg-zinc-200/50 border-transparent text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200"
+                ? "bg-[#dfe1ec] text-[#4d517c] border-t-black border-x-black border-b-transparent shadow-[0_-2px_0_#4d517c] font-black" 
+                : "bg-[#cbd2e1] border-zinc-400 text-zinc-650 hover:text-zinc-900"
             }`}
           >
             🚨 رف النيابة العامة (ص٤)
@@ -1076,10 +1125,10 @@ export default function App() {
 
           <button 
             onClick={() => { setActiveShelf("interior"); setJudgeActivePage(5); }}
-            className={`px-3 py-1.5 font-bold text-[11px] rounded-t-md transition-all shrink-0 cursor-pointer border-t border-x ${
+            className={`px-3 py-1 font-bold text-[11px] transition-all shrink-0 cursor-pointer border-t border-x ${
               activeShelf === "interior" 
-                ? "bg-rose-100 text-rose-800 border-rose-405 shadow-[0_-2px_0_#e11d48]" 
-                : "bg-zinc-200/50 border-transparent text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200"
+                ? "bg-[#dfe1ec] text-[#4d517c] border-t-black border-x-black border-b-transparent shadow-[0_-2px_0_#4d517c] font-black" 
+                : "bg-[#cbd2e1] border-zinc-400 text-zinc-650 hover:text-zinc-900"
             }`}
           >
             👮 رف الداخلية والشرطة (ص٥)
@@ -1087,10 +1136,10 @@ export default function App() {
 
           <button 
             onClick={() => { setActiveShelf("favorites"); }}
-            className={`px-3 py-1.5 font-bold text-[11px] rounded-t-md transition-all shrink-0 cursor-pointer border-t border-x ${
+            className={`px-3 py-1 font-bold text-[11px] transition-all shrink-0 cursor-pointer border-t border-x ${
               activeShelf === "favorites" 
-                ? "bg-purple-105 text-purple-850 bg-purple-100 border-purple-400 shadow-[0_-2px_0_#7c3aed]" 
-                : "bg-zinc-200/50 border-transparent text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200"
+                ? "bg-[#dfe1ec] text-[#4d517c] border-t-black border-x-black border-b-transparent shadow-[0_-2px_0_#4d517c] font-black" 
+                : "bg-[#cbd2e1] border-zinc-400 text-zinc-650 hover:text-zinc-900"
             }`}
           >
             ⭐ الأدوات المفضلة
@@ -1098,9 +1147,9 @@ export default function App() {
         </div>
 
         {/* Shelf Quick-Action button shelf contents */}
-        <div className="bg-[#f0f1f4] px-4 py-2 flex flex-wrap gap-1.5 items-center min-h-[50px] border-b border-zinc-305">
+        <div className="bg-[#f0f1f6] px-4 py-2 flex flex-wrap gap-1.5 items-center min-h-[50px] border-b border-zinc-400 shadow-[inset_1px_1px_1px_rgba(0,0,0,0.1)]">
           
-          <div className="text-[10px] text-zinc-500 ml-2 font-mono font-bold shrink-0">أدوات الرف:</div>
+          <div className="text-[10px] text-zinc-600 ml-2 font-mono font-bold shrink-0">أدوات الرف:</div>
           
           {currentShelfAgents.map((agent) => {
             const isSelected = selectedAgent.key === agent.key;
@@ -1108,28 +1157,28 @@ export default function App() {
               <button
                 key={agent.key}
                 onClick={() => triggerAgent(agent)}
-                className={`px-3 py-1.5 rounded-md border text-xs flex items-center gap-1.5 transition-all text-right cursor-pointer max-w-[210px] shrink-0 font-medium ${
+                className={`px-3 py-1 border text-xs flex items-center gap-1.5 transition-all text-right cursor-pointer max-w-[210px] shrink-0 font-bold ${
                   isSelected 
-                    ? "bg-amber-500 text-zinc-950 font-black border-amber-600 shadow-md scale-95" 
-                    : "bg-white hover:bg-zinc-50 text-zinc-700 border-zinc-300 hover:border-zinc-400 active:scale-95 shadow-sm"
+                    ? "bg-amber-500 text-zinc-950 font-black border-black shadow-[inset_1px_1px_0_#fff] scale-95" 
+                    : "bg-[#dfe1ec] hover:bg-zinc-50 text-zinc-800 border-zinc-400 active:scale-95 shadow-sm"
                 }`}
                 title={agent.description}
               >
                 <span>{agent.emoji}</span>
-                <span className="truncate text-[11px] font-bold">{agent.name}</span>
+                <span className="truncate text-[11px] font-extrabold">{agent.name}</span>
               </button>
             );
           })}
 
           {currentShelfAgents.length === 0 && (
-            <span className="text-zinc-450 text-xs italic">لا توجد أدوات بالرف تطابق الفلترة الحالية.</span>
+            <span className="text-zinc-500 text-xs italic">لا توجد أدوات بالرف تطابق الفلترة الحالية.</span>
           )}
 
           {/* Quick-Batch Appraisal icon shortcut */}
-          <div className="w-px h-6 bg-[#252525] mx-1 mr-auto"></div>
+          <div className="w-px h-6 bg-zinc-400 mx-1 mr-auto"></div>
           <button
             onClick={runBatchAppraisal}
-            className="px-3 py-1 bg-gradient-to-l from-amber-600 to-amber-500 text-zinc-950 hover:bg-amber-400 rounded text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors shrink-0"
+            className="motif-button-yellow px-3 py-1 text-[11px] font-black flex items-center gap-1 cursor-pointer transition-colors shrink-0"
             title="حساب كود المواريث والضرائب والمساحة بشكل مترابط دفعة واحدة"
           >
             <Activity className="w-3 h-3 stroke-[2.5]" />
@@ -1285,88 +1334,102 @@ export default function App() {
       </div>
 
       {/* ================= 3. AUTODESK MAYA WORKSPACE LAYOUT (Outliner, Viewport, Attributes) ================= */}
-      <div className="flex-1 flex flex-col xl:flex-row relative bg-[#eceef2]">
+      <div className="flex-1 flex flex-col xl:flex-row relative bg-transparent gap-2 p-1">
         
         {/* ================= A. TOOL BOX & OUTLINER COLUMN (Positioned on Right, order-2) ================= */}
-        <div className="w-full xl:w-72 bg-[#f4f5f8] border-b xl:border-b-0 xl:border-l border-zinc-300 flex flex-row xl:flex-col shrink-0 order-2">
-          
-          {/* Maya Left Tool Box Vertical Bar */}
-          <div className="w-12 bg-[#dfe1e6] border-l border-zinc-250 flex flex-col items-center py-4 gap-4 shrink-0">
-            <div className="text-[10px] font-mono text-zinc-500 font-bold">TOOL</div>
-            
-            {/* Selection modes */}
-            <button 
-              onClick={() => { setActiveTool("select"); setSimulationStatus("أداة التحديد نشطة :: Q. انقر على أي جزء من قطعة المضلع لمطابقة الحدود."); }}
-              className={`p-2 rounded transition-all cursor-pointer ${activeTool === "select" ? "bg-amber-500 text-zinc-900 shadow-md scale-95" : "text-zinc-650 hover:text-black hover:bg-zinc-200"}`}
-              title="أداة التحديد المباشر [Q]"
-            >
-              <Compass className="w-4 h-4" />
-            </button>
-            
-            <button 
-              onClick={() => { setActiveTool("move"); setSimulationStatus("أداة النقل المساحي نشطة :: W. يسمح لك بسحب إحداثيات قطعة الأرض 102."); }}
-              className={`p-2 rounded transition-all cursor-pointer ${activeTool === "move" ? "bg-amber-500 text-zinc-900 shadow-md scale-95" : "text-zinc-650 hover:text-black hover:bg-zinc-200"}`}
-              title="أداة النقل وتعيين الصكوك [W]"
-            >
-              <Move className="w-4 h-4" />
-            </button>
-
-            <button 
-              onClick={() => { setActiveTool("rotate"); setSimulationStatus("أداة التدوير الهندسي نشطة :: E. تدوير المضلع لمطابقة خط كنتور البلدية."); }}
-              className={`p-2 rounded transition-all cursor-pointer ${activeTool === "rotate" ? "bg-amber-500 text-zinc-900 shadow-md scale-95" : "text-zinc-650 hover:text-black hover:bg-zinc-200"}`}
-              title="أداة تدوير حدود الحيازة [E]"
-            >
-              <RotateCw className="w-4 h-4" />
-            </button>
-
-            <button 
-              onClick={() => { setActiveTool("scale"); setSimulationStatus("أداة قياس المساحة الحرة نشطة :: R. تمديد أو تصغير مساحة التداخل الإنشائي."); }}
-              className={`p-2 rounded transition-all cursor-pointer ${activeTool === "scale" ? "bg-amber-500 text-zinc-900 shadow-md scale-95" : "text-zinc-650 hover:text-black hover:bg-zinc-200"}`}
-              title="أداة قياس وتمديد المساحات [R]"
-            >
-              <Maximize className="w-4 h-4" />
-            </button>
-
-            <button 
-              onClick={() => { setActiveTool("draw"); setSimulationStatus("أداة رسم مضلع جديد نشطة :: انقر داخل الـ Viewport لوضع أوتاد مضلع مخصص لحساب المساحة والأنصبة فوراً."); }}
-              className={`p-2 rounded transition-all cursor-pointer ${activeTool === "draw" ? "bg-emerald-500 text-zinc-950 font-bold shadow-md scale-95" : "text-zinc-650 hover:text-black hover:bg-zinc-250"}`}
-              title="أداة رسم مضلع مخصص [Polygon Drawing] - انقر لوضع نقاط"
-            >
-              <PenTool className="w-4 h-4" />
-            </button>
-
-            <div className="w-6 h-px bg-zinc-300 my-2"></div>
-
-            {/* Display status dots of active channels */}
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" title="خط الرصد المباشر متصل"></span>
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" title="قنوات المواريث الشرعية"></span>
-            <span className="w-2.5 h-2.5 rounded-full bg-zinc-700" title="خادم الوزارة بمصر"></span>
+        <div className="w-full xl:w-80 motif-window flex flex-col shrink-0 order-2">
+          {/* Titlebar */}
+          <div className="motif-titlebar flex items-center justify-between px-2 py-1 h-7 select-none">
+            <div className="flex items-center gap-1.5">
+              <button className="w-4 h-4 bg-[#dfe1ec] border border-black shadow-[inset_1px_1px_0_#fff] flex items-center justify-center text-[8px] font-bold text-black active:shadow-[inset_1px_1px_0_#70738a] select-none">
+                <span className="w-2.5 h-0.5 bg-black block"></span>
+              </button>
+              <span className="text-[11px] font-bold text-white">Outliner - المستعرض الهيكلي للتركات</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <button className="w-4 h-4 bg-[#dfe1ec] border border-black shadow-[inset_1px_1px_0_#fff] flex items-center justify-center text-[9px] font-extrabold text-black active:shadow-[inset_1px_1px_0_#70738a] select-none leading-none">.</button>
+              <button className="w-4 h-4 bg-[#dfe1ec] border border-black shadow-[inset_1px_1px_0_#fff] flex items-center justify-center text-[9px] font-extrabold text-black active:shadow-[inset_1px_1px_0_#70738a] select-none leading-none">▢</button>
+            </div>
           </div>
+          
+          <div className="flex flex-1 flex-row min-h-0 overflow-hidden bg-[#dfe1ec] p-1.5 gap-1.5">
+            {/* Maya Left Tool Box Vertical Bar */}
+            <div className="w-11 bg-[#dfe1ec] border border-zinc-400 p-1.5 flex flex-col items-center gap-3 shrink-0 shadow-[inset_1px_1px_1px_rgba(0,0,0,0.15)]">
+              <div className="text-[9px] font-bold text-zinc-600 font-mono">TOOL</div>
+              
+              {/* Selection modes */}
+              <button 
+                onClick={() => { setActiveTool("select"); setSimulationStatus("أداة التحديد نشطة :: Q. انقر على أي جزء من قطعة المضلع لمطابقة الحدود."); }}
+                className={`p-1.5 border transition-all cursor-pointer ${activeTool === "select" ? "bg-amber-500 border-black shadow-[inset_1px_1px_0_rgba(255,255,255,0.4)] scale-95" : "bg-[#dfe1ec] border-zinc-300 hover:border-black shadow-sm"}`}
+                title="أداة التحديد المباشر [Q]"
+              >
+                <Compass className="w-3.5 h-3.5 text-zinc-900" />
+              </button>
+              
+              <button 
+                onClick={() => { setActiveTool("move"); setSimulationStatus("أداة النقل المساحي نشطة :: W. يسمح لك بسحب إحداثيات قطعة الأرض 102."); }}
+                className={`p-1.5 border transition-all cursor-pointer ${activeTool === "move" ? "bg-amber-500 border-black shadow-[inset_1px_1px_0_rgba(255,255,255,0.4)] scale-95" : "bg-[#dfe1ec] border-zinc-300 hover:border-black shadow-sm"}`}
+                title="أداة النقل وتعيين الصكوك [W]"
+              >
+                <Move className="w-3.5 h-3.5 text-zinc-900" />
+              </button>
 
-          {/* Outliner Hierarchical tree List */}
-          <div className="flex-1 p-3 flex flex-col gap-3 min-w-0">
-            <div className="flex items-center justify-between border-b border-zinc-250 pb-1.5 mb-1.5 text-zinc-700 text-[11px] font-bold">
-              <span className="flex items-center gap-1.5 text-zinc-800">
-                <Layers className="w-3.5 h-3.5 text-blue-500 font-bold" />
-                المستعرض الهيكلي (Outliner)
-              </span>
-              <span className="text-[9px] text-zinc-500 font-mono bg-zinc-200 px-1.5 py-0.5 rounded">بيئة_العمل</span>
+              <button 
+                onClick={() => { setActiveTool("rotate"); setSimulationStatus("أداة التدوير الهندسي نشطة :: E. تدوير المضلع لمطابقة خط كنتور البلدية."); }}
+                className={`p-1.5 border transition-all cursor-pointer ${activeTool === "rotate" ? "bg-amber-500 border-black shadow-[inset_1px_1px_0_rgba(255,255,255,0.4)] scale-95" : "bg-[#dfe1ec] border-zinc-300 hover:border-black shadow-sm"}`}
+                title="أداة تدوير حدود الحيازة [E]"
+              >
+                <RotateCw className="w-3.5 h-3.5 text-zinc-900" />
+              </button>
+
+              <button 
+                onClick={() => { setActiveTool("scale"); setSimulationStatus("أداة قياس المساحة الحرة نشطة :: R. تمديد أو تصغير مساحة التداخل الإنشائي."); }}
+                className={`p-1.5 border transition-all cursor-pointer ${activeTool === "scale" ? "bg-amber-500 border-black shadow-[inset_1px_1px_0_rgba(255,255,255,0.4)] scale-95" : "bg-[#dfe1ec] border-zinc-300 hover:border-black shadow-sm"}`}
+                title="أداة قياس وتمديد المساحات [R]"
+              >
+                <Maximize className="w-3.5 h-3.5 text-zinc-900" />
+              </button>
+
+              <button 
+                onClick={() => { setActiveTool("draw"); setSimulationStatus("أداة رسم مضلع جديد نشطة :: انقر داخل الـ Viewport لوضع أوتاد مضلع مخصص لحساب المساحة والأنصبة فوراً."); }}
+                className={`p-1.5 border transition-all cursor-pointer ${activeTool === "draw" ? "bg-emerald-500 border-black shadow-[inset_1px_1px_0_rgba(255,255,255,0.4)] scale-95" : "bg-[#dfe1ec] border-zinc-300 hover:border-black shadow-sm"}`}
+                title="أداة رسم مضلع مخصص [Polygon Drawing] - انقر لوضع نقاط"
+              >
+                <PenTool className="w-3.5 h-3.5 text-zinc-900" />
+              </button>
+
+              <div className="w-5 h-px bg-zinc-400 my-1"></div>
+
+              {/* Display status dots of active channels */}
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-zinc-600" title="خط الرصد المباشر متصل"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 border border-zinc-600 animate-pulse" title="قنوات المواريث الشرعية"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-zinc-600 border border-zinc-400" title="خادم الوزارة بمصر"></span>
             </div>
 
-            <div className="overflow-y-auto max-h-[480px] xl:max-h-none flex-1 flex flex-col gap-2 text-[11px]">
-              
-              {/* Root Scene Node */}
-              <div className="p-1 border border-zinc-200 rounded-lg bg-white/70">
-                <button 
-                  onClick={() => setOutlinerExpanded(prev => ({ ...prev, cairo_scene: !prev.cairo_scene }))}
-                  className="w-full flex items-center justify-between py-1 text-zinc-700 hover:text-black text-right font-bold"
-                >
-                  <span className="flex items-center gap-1.5 truncate font-bold text-zinc-800">
-                    <Map className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
-                    مخطط_القاهرة_الجديدة_Scene
-                  </span>
-                  {outlinerExpanded.cairo_scene ? <ChevronUp className="w-3 h-3 text-zinc-500" /> : <ChevronDown className="w-3 h-3 text-zinc-500" />}
-                </button>
+            {/* Outliner Hierarchical tree List */}
+            <div className="flex-1 motif-inner-bevel p-2.5 flex flex-col gap-3 min-w-0 overflow-y-auto">
+              <div className="flex items-center justify-between border-b border-zinc-400 pb-1.5 mb-1 text-zinc-800 text-[11px] font-bold">
+                <span className="flex items-center gap-1.5 text-zinc-900">
+                  <Layers className="w-3.5 h-3.5 text-blue-800 font-bold" />
+                  المستعرض الهيكلي (Outliner)
+                </span>
+                <span className="text-[9px] text-zinc-600 font-mono bg-[#cbd2e1] border border-zinc-400 px-1.5 py-0.5">بيئة_العمل</span>
+              </div>
+
+              <div className="flex-1 flex flex-col gap-2 text-[11px]">
+                
+                {/* Root Scene Node */}
+                <div className="p-1 border border-zinc-400 bg-white shadow-sm">
+                  <button 
+                    onClick={() => setOutlinerExpanded(prev => ({ ...prev, cairo_scene: !prev.cairo_scene }))}
+                    className="w-full flex items-center justify-between py-1 text-zinc-700 hover:text-black text-right font-bold"
+                  >
+                    <span className="flex items-center gap-1.5 truncate font-bold text-zinc-800">
+                      <Map className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                      مخطط_القاهرة_الجديدة_Scene
+                    </span>
+                    {outlinerExpanded.cairo_scene ? <ChevronUp className="w-3 h-3 text-zinc-500" /> : <ChevronDown className="w-3 h-3 text-zinc-500" />}
+                  </button>
 
                 {/* Sub Children of Cairo Scene */}
                 {outlinerExpanded.cairo_scene && (
@@ -1481,21 +1544,37 @@ export default function App() {
             </div>
 
           </div>
+          </div> {/* Closes the flex-1 flex-row wrapper */}
 
         </div>
 
         {/* ================= B. CENTER VIEWPORT 2.0 (The Visual Screen - Shrunken to 40% and placed on Left) ================= */}
-        <div className="w-full xl:w-[40%] flex flex-col min-w-0 bg-[#2a2a2d] border-b xl:border-b-0 border-r border-[#242426] order-1">
+        <div className="w-full xl:flex-1 flex flex-col min-w-0 motif-window order-1">
+          {/* Titlebar */}
+          <div className="motif-titlebar flex items-center justify-between px-2 py-1 h-7 select-none">
+            <div className="flex items-center gap-1.5">
+              <button className="w-4 h-4 bg-[#dfe1ec] border border-black shadow-[inset_1px_1px_0_#fff] flex items-center justify-center text-[8px] font-bold text-black active:shadow-[inset_1px_1px_0_#70738a] select-none">
+                <span className="w-2.5 h-0.5 bg-black block"></span>
+              </button>
+              <span className="text-[11px] font-bold text-white">Source Viewer - Viewport 2.0 (مخطط المعاينة والخطوط الطبوغرافية)</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <button className="w-4 h-4 bg-[#dfe1ec] border border-black shadow-[inset_1px_1px_0_#fff] flex items-center justify-center text-[9px] font-extrabold text-black active:shadow-[inset_1px_1px_0_#70738a] select-none leading-none">.</button>
+              <button className="w-4 h-4 bg-[#dfe1ec] border border-black shadow-[inset_1px_1px_0_#fff] flex items-center justify-center text-[9px] font-extrabold text-black active:shadow-[inset_1px_1px_0_#70738a] select-none leading-none">▢</button>
+            </div>
+          </div>
+          
+          <div className="flex-1 flex flex-col overflow-hidden bg-[#dfe1ec] p-1 gap-1">
           
           {/* Viewport display panel options (matching Autodesk Maya wireframe configs) */}
-          <div className="bg-[#2a2b2b] border-b border-[#1a1a1a] px-3 py-1.5 flex flex-wrap gap-3 items-center justify-between text-zinc-300 text-[11px] select-none">
+          <div className="bg-[#dfe1ec] border-b border-zinc-400 px-3 py-1.5 flex flex-wrap gap-3 items-center justify-between text-zinc-900 text-[11px] select-none shadow-[inset_1px_1px_0_#fff]">
             <div className="flex items-center gap-2 overflow-x-auto">
-              <span className="text-[#d49911] font-bold">عرض فيوبورت 2.0:</span>
+              <span className="text-zinc-900 font-bold">عرض فيوبورت 2.0:</span>
               
               {/* Display mode toggles */}
               <button 
                 onClick={() => setViewportMode("wireframe")}
-                className={`px-1.5 py-0.5 rounded cursor-pointer ${viewportMode === "wireframe" ? "bg-amber-500 text-zinc-950 font-bold" : "hover:bg-[#444] text-zinc-300"}`}
+                className={`px-2 py-0.5 border text-[10.5px] cursor-pointer ${viewportMode === "wireframe" ? "bg-amber-500 border-black shadow-[inset_1px_1px_0_rgba(255,255,255,0.4)] text-zinc-950 font-black" : "bg-[#dfe1ec] border-zinc-300 hover:border-black text-zinc-800"}`}
                 title="عرض الحدود بالأسلاك الهيكلية فقط [Wireframe]"
               >
                 شبكي (Wireframe)
@@ -1503,7 +1582,7 @@ export default function App() {
               
               <button 
                 onClick={() => setViewportMode("smooth")}
-                className={`px-1.5 py-0.5 rounded cursor-pointer ${viewportMode === "smooth" ? "bg-amber-500 text-zinc-950 font-bold" : "hover:bg-[#444] text-zinc-300"}`}
+                className={`px-2 py-0.5 border text-[10.5px] cursor-pointer ${viewportMode === "smooth" ? "bg-amber-500 border-black shadow-[inset_1px_1px_0_rgba(255,255,255,0.4)] text-zinc-950 font-black" : "bg-[#dfe1ec] border-zinc-300 hover:border-black text-zinc-800"}`}
                 title="تنعيم كلي مع الألوان والخرسانات [Smooth Shade All]"
               >
                 تنعيم كلي (Smoothed)
@@ -1511,7 +1590,7 @@ export default function App() {
 
               <button 
                 onClick={() => setViewportMode("wireframeOnShaded")}
-                className={`px-1.5 py-0.5 rounded cursor-pointer ${viewportMode === "wireframeOnShaded" ? "bg-amber-500 text-zinc-950 font-bold" : "hover:bg-[#444] text-zinc-300"}`}
+                className={`px-2 py-0.5 border text-[10.5px] cursor-pointer ${viewportMode === "wireframeOnShaded" ? "bg-amber-500 border-black shadow-[inset_1px_1px_0_rgba(255,255,255,0.4)] text-zinc-950 font-black" : "bg-[#dfe1ec] border-zinc-300 hover:border-black text-zinc-800"}`}
                 title="تداخل الهيكل السلكي مع التنعيم [Wireframe on Shaded]"
               >
                 تداخل (Wireframe on Shaded)
@@ -1519,31 +1598,31 @@ export default function App() {
 
               <button 
                 onClick={() => setViewportMode("textured")}
-                className={`px-1.5 py-0.5 rounded cursor-pointer ${viewportMode === "textured" ? "bg-amber-500 text-zinc-950 font-bold" : "hover:bg-[#444] text-zinc-300"}`}
+                className={`px-2 py-0.5 border text-[10.5px] cursor-pointer ${viewportMode === "textured" ? "bg-amber-500 border-black shadow-[inset_1px_1px_0_rgba(255,255,255,0.4)] text-zinc-950 font-black" : "bg-[#dfe1ec] border-zinc-300 hover:border-black text-zinc-800"}`}
                 title="إبراز النبض والخطوط المساحية [Textured]"
               >
                 بلدي مرقّم (Textured)
               </button>
 
-              <div className="w-px h-4 bg-zinc-800"></div>
+              <div className="w-px h-4 bg-zinc-400"></div>
 
               {/* Light and shadows toggles */}
-              <label className="flex items-center gap-1 cursor-pointer hover:text-white">
+              <label className="flex items-center gap-1.5 cursor-pointer hover:text-black font-bold text-zinc-800">
                 <input 
                   type="checkbox" 
                   checked={useLights} 
                   onChange={() => setUseLights(!useLights)} 
-                  className="rounded bg-zinc-900 border-zinc-800 text-amber-500 focus:ring-0 w-3 h-3" 
+                  className="rounded bg-white border-zinc-400 text-amber-500 focus:ring-0 w-3 h-3" 
                 />
                 الإضاءة الافتراضية
               </label>
 
-              <label className="flex items-center gap-1 cursor-pointer hover:text-white">
+              <label className="flex items-center gap-1.5 cursor-pointer hover:text-black font-bold text-zinc-800">
                 <input 
                   type="checkbox" 
                   checked={useShadows} 
                   onChange={() => setUseShadows(!useShadows)} 
-                  className="rounded bg-zinc-900 border-[#1c1c1c] text-amber-500 focus:ring-0 w-3 h-3" 
+                  className="rounded bg-white border-zinc-400 text-amber-500 focus:ring-0 w-3 h-3" 
                 />
                 الظلال الكنتورية
               </label>
@@ -1897,7 +1976,13 @@ export default function App() {
 
                       {viewportMode !== "wireframe" && (
                         <g>
-                          {activeCase === "hadayek" ? (
+                          {activeCase === "orouba" ? (
+                            <>
+                              <text x="190" y="75" fill="#f59e0b" fontSize="8.5" fontWeight="bold">شقة العروبة (٢٩.٩٨٧٥°N / ٣١.١٧٥٠°E)</text>
+                              <text x="210" y="115" fill="#38bdf8" fontSize="8" fontWeight="bold">منطقة المحولات (٢٩.٩٨٧٢° / ٣١.١٧٤٥°)</text>
+                              <text x="150" y="240" fill="#10b981" fontSize="8" fontWeight="bold">كشري الإخوة (٢٩.٩٨٧٠° / ٣١.١٧٤٠°)</text>
+                            </>
+                          ) : activeCase === "hadayek" ? (
                             <>
                               <text x="190" y="75" fill="#f59e0b" fontSize="8.5" fontWeight="bold">حديقة منفعة (٢٩.٩٨١٢° / ٣١.١١٨٩°)</text>
                               <text x="210" y="115" fill="#38bdf8" fontSize="8" fontWeight="bold">شقة ٢ (٢٩.٩٨١٥° / ٣١.١١٩٢°)</text>
@@ -1914,8 +1999,21 @@ export default function App() {
                       )}
                     </g>
 
-                    {/* Disputed encroachment wall or Hadayek garden bounds */}
-                    {activeCase === "hadayek" ? (
+                    {/* Disputed encroachment wall, Hadayek garden bounds, or Orouba violation indicator */}
+                    {activeCase === "orouba" ? (
+                      <g>
+                        <line 
+                          x1="140" y1="210" 
+                          x2="310" y2="230" 
+                          stroke="#ef4444" 
+                          strokeWidth="3.5" 
+                          strokeDasharray="4,4"
+                          className="animate-pulse"
+                        />
+                        <text x="225" y="200" fill="#ef4444" fontSize="9" fontWeight="bold" textAnchor="middle">⚠️ وضع محفوف بالمخاطر: نموذج التصالح غير متوفر</text>
+                        <text x="225" y="245" fill="#ef4444" fontSize="8.5" fontWeight="bold" textAnchor="middle" className="animate-pulse">شقة الدور الخامس مهددة بقطع المرافق</text>
+                      </g>
+                    ) : activeCase === "hadayek" ? (
                       <g>
                         <line 
                           x1="140" y1="210" 
@@ -1947,7 +2045,13 @@ export default function App() {
 
                     {/* Render Islamic Subdivision of the Land if in Year 2026 */}
                     {activeYear === 2026 && viewportMode !== "wireframe" && (
-                      activeCase === "hadayek" ? (
+                      activeCase === "orouba" ? (
+                        <g>
+                          <line x1="260" y1="80" x2="200" y2="240" stroke="#f43f5e" strokeWidth="1.5" strokeDasharray="3,3" />
+                          <text x="180" y="145" fill="#f43f5e" fontSize="8.5" fontWeight="bold">شقة ١٤٠م ومطبخ مع حمام</text>
+                          <text x="260" y="185" fill="#ef4444" fontSize="8.5" fontWeight="bold">حصص شائعة متداخلة بالأرض</text>
+                        </g>
+                      ) : activeCase === "hadayek" ? (
                         <g>
                           <line x1="260" y1="80" x2="200" y2="240" stroke="#38bdf8" strokeWidth="1.5" strokeDasharray="3,3" />
                           <text x="180" y="145" fill="#38bdf8" fontSize="8.5" fontWeight="bold">شقة ١٣٥م غرف ومطبخ أمريكي</text>
@@ -2157,63 +2261,79 @@ export default function App() {
             </div>
 
           </div>
+          </div> {/* Closes the flex-1 flex-col overflow-hidden wrapper */}
 
         </div>
 
         {/* ================= C. RIGHT SIDEBAR PANEL: Channels, Attributes, AI Consultant, Google Drive (Takes remaining width on the Right, order-3) ================= */}
-        <div className="flex-1 bg-[#edeef2] border-t xl:border-t-0 xl:border-r border-zinc-300 flex flex-col shrink-0 select-none order-3">
-          
-          {/* Tabs header for Channel Box, Attribute Editor, AI Assistant, and Google Drive */}
-          <div className="grid grid-cols-4 bg-[#dfe1e6] border-b border-zinc-300 p-1 gap-1">
-            <button
-              onClick={() => setActiveRightTab("attribute")}
-              className={`py-1.5 px-1 text-[10px] font-bold rounded transition-all cursor-pointer truncate ${
-                activeRightTab === "attribute" 
-                  ? "bg-white text-amber-700 border border-zinc-300 shadow-sm" 
-                  : "text-zinc-650 hover:text-black hover:bg-zinc-200"
-              }`}
-            >
-              مظهر الخواص (Attributes)
-            </button>
-            <button
-              onClick={() => setActiveRightTab("channel")}
-              className={`py-1.5 px-1 text-[10px] font-bold rounded transition-all cursor-pointer truncate ${
-                activeRightTab === "channel" 
-                  ? "bg-white text-amber-700 border border-zinc-300 shadow-sm" 
-                  : "text-zinc-650 hover:text-black hover:bg-zinc-200"
-              }`}
-            >
-              قنوات التحكم (Channels)
-            </button>
-            <button
-              onClick={() => setActiveRightTab("aiConsultant")}
-              className={`py-1.5 px-1 text-[10px] font-bold rounded transition-all cursor-pointer text-blue-700 hover:text-blue-900 flex items-center justify-center gap-1 shrink-0 ${
-                activeRightTab === "aiConsultant" 
-                  ? "bg-white text-blue-800 border border-zinc-300 shadow-sm" 
-                  : "text-zinc-650 hover:text-black hover:bg-zinc-200"
-              }`}
-            >
-              <Sparkles className="w-2.5 h-2.5 text-blue-500 shrink-0" />
-              مستشار الذكاء
-            </button>
-            <button
-              onClick={() => setActiveRightTab("drive")}
-              className={`py-1.5 px-1 text-[10px] font-bold rounded transition-all cursor-pointer text-emerald-700 hover:text-emerald-900 flex items-center justify-center gap-1 ${
-                activeRightTab === "drive" 
-                  ? "bg-white text-emerald-700 border border-zinc-300 shadow-sm" 
-                  : "text-zinc-650 hover:text-black hover:bg-zinc-200"
-              }`}
-            >
-              <Cloud className="w-2.5 h-2.5 text-emerald-500 shrink-0" />
-              مستندات Drive
-            </button>
+        <div className="w-full xl:w-96 motif-window flex flex-col shrink-0 order-3">
+          {/* Titlebar */}
+          <div className="motif-titlebar flex items-center justify-between px-2 py-1 h-7 select-none">
+            <div className="flex items-center gap-1.5">
+              <button className="w-4 h-4 bg-[#dfe1ec] border border-black shadow-[inset_1px_1px_0_#fff] flex items-center justify-center text-[8px] font-bold text-black active:shadow-[inset_1px_1px_0_#70738a] select-none">
+                <span className="w-2.5 h-0.5 bg-black block"></span>
+              </button>
+              <span className="text-[11px] font-bold text-white">Attribute Editor - مظهر الخواص والتحليل المزدوج</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <button className="w-4 h-4 bg-[#dfe1ec] border border-black shadow-[inset_1px_1px_0_#fff] flex items-center justify-center text-[9px] font-extrabold text-black active:shadow-[inset_1px_1px_0_#70738a] select-none leading-none">.</button>
+              <button className="w-4 h-4 bg-[#dfe1ec] border border-black shadow-[inset_1px_1px_0_#fff] flex items-center justify-center text-[9px] font-extrabold text-black active:shadow-[inset_1px_1px_0_#70738a] select-none leading-none">▢</button>
+            </div>
           </div>
-
-          <div className="p-4 flex-1 overflow-y-auto max-h-[500px] xl:max-h-none">
+          
+          <div className="flex-1 flex flex-col overflow-hidden bg-[#dfe1ec] p-1.5 gap-1.5">
             
-            {/* =============== TAB 1: ATTRIBUTE EDITOR =============== */}
-            {activeRightTab === "attribute" && (
-              <div className="flex flex-col gap-4 font-sans">
+            {/* Tabs header for Channel Box, Attribute Editor, AI Assistant, and Google Drive */}
+            <div className="grid grid-cols-4 bg-[#cbd2e1] border border-zinc-400 p-0.5 gap-0.5 shadow-[inset_1px_1px_1px_rgba(0,0,0,0.15)]">
+              <button
+                onClick={() => setActiveRightTab("attribute")}
+                className={`py-1 px-1 text-[10.5px] font-bold border transition-all cursor-pointer truncate ${
+                  activeRightTab === "attribute" 
+                    ? "bg-[#dfe1ec] border-zinc-400 text-amber-900 shadow-[inset_1.5px_1.5px_0_#fff] font-black" 
+                    : "bg-[#cbd2e1] border-transparent text-zinc-700 hover:text-black hover:bg-[#b0b9cc]"
+                }`}
+              >
+                مظهر الخواص (Attributes)
+              </button>
+              <button
+                onClick={() => setActiveRightTab("channel")}
+                className={`py-1 px-1 text-[10.5px] font-bold border transition-all cursor-pointer truncate ${
+                  activeRightTab === "channel" 
+                    ? "bg-[#dfe1ec] border-zinc-400 text-amber-900 shadow-[inset_1.5px_1.5px_0_#fff] font-black" 
+                    : "bg-[#cbd2e1] border-transparent text-zinc-700 hover:text-black hover:bg-[#b0b9cc]"
+                }`}
+              >
+                قنوات التحكم (Channels)
+              </button>
+              <button
+                onClick={() => setActiveRightTab("aiConsultant")}
+                className={`py-1 px-1 text-[10.5px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-0.5 shrink-0 truncate ${
+                  activeRightTab === "aiConsultant" 
+                    ? "bg-[#dfe1ec] border-zinc-400 text-blue-900 shadow-[inset_1.5px_1.5px_0_#fff] font-black" 
+                    : "bg-[#cbd2e1] border-transparent text-zinc-700 hover:text-black hover:bg-[#b0b9cc]"
+                }`}
+              >
+                <Sparkles className="w-2.5 h-2.5 text-blue-600 shrink-0" />
+                مستشار الذكاء
+              </button>
+              <button
+                onClick={() => setActiveRightTab("drive")}
+                className={`py-1 px-1 text-[10.5px] font-bold border transition-all cursor-pointer flex items-center justify-center gap-0.5 shrink-0 truncate ${
+                  activeRightTab === "drive" 
+                    ? "bg-[#dfe1ec] border-zinc-400 text-emerald-900 shadow-[inset_1.5px_1.5px_0_#fff] font-black" 
+                    : "bg-[#cbd2e1] border-transparent text-zinc-700 hover:text-black hover:bg-[#b0b9cc]"
+                }`}
+              >
+                <Cloud className="w-2.5 h-2.5 text-emerald-600 shrink-0" />
+                مستندات Drive
+              </button>
+            </div>
+
+            <div className="motif-inner-bevel p-2.5 flex-1 overflow-y-auto max-h-[500px] xl:max-h-none">
+              
+              {/* =============== TAB 1: ATTRIBUTE EDITOR =============== */}
+              {activeRightTab === "attribute" && (
+                <div className="flex flex-col gap-4 font-sans">
                 
                 {/* INTERACTIVE INHERITANCE CALCULATOR RESULTS FOR THE JUDGE */}
                 {activeShelf === "judicial" && (
@@ -2665,73 +2785,92 @@ export default function App() {
           </div>
 
           {/* Active case summary panel */}
-          <div className="p-3.5 bg-[#232323] border-t border-[#181818] text-xs font-sans text-right">
+          <div className="p-3 bg-[#cbd2e1] border-t border-zinc-400 text-xs font-sans text-right shadow-[0_-1px_0_#fff]">
             <div className="flex items-center justify-between mb-1 text-right">
-              <span className="bg-amber-600/10 text-amber-500 text-[10px] px-1.5 py-0.5 rounded border border-amber-600/20">
-                {activeCase === "hadayek" ? "دراسة صفقة شراء عقار" : "تعدي حدود سكنية"}
+              <span className="bg-[#dfe1ec] text-zinc-900 text-[10px] px-1.5 py-0.5 border border-zinc-400 font-bold">
+                {activeCase === "orouba" ? "دراسة صفقة شقة العروبة" : activeCase === "hadayek" ? "دراسة صفقة شراء عقار" : "تعدي حدود سكنية"}
               </span>
-              <span className="font-bold text-zinc-400">القضية الحالية:</span>
+              <span className="font-bold text-zinc-800">القضية الحالية:</span>
             </div>
-            <p className="text-zinc-400 font-semibold text-[10px] leading-relaxed text-right">
-              {activeCase === "hadayek" 
+            <p className="text-zinc-700 font-semibold text-[10px] leading-relaxed text-right">
+              {activeCase === "orouba"
+                ? "شقة ٢٣٩ شارع العروبة الرئيسي، منطقة المحولات - حي الطالبية، الهرم"
+                : activeCase === "hadayek" 
                 ? "شقة أرضي بجنينة، قطعة ٧٢ ز - البوابة الثالثة، حدائق الأهرام" 
                 : "الموقع الرفع الكنتوري: بلوك القاهرة الجديدة ٣٠١٩"}
             </p>
           </div>
+          </div> {/* Closes the flex-1 flex-col overflow-hidden wrapper */}
 
         </div>
 
       </div>
 
       {/* ================= 4. الإخراج النهائي والتقييم النهائي (The Judges Final Decree Screen) ================= */}
-      <section id="judicial-document-anchor" className="mx-4 mt-2 mb-4 bg-[#232323] border border-[#393939] rounded-xl p-5 flex flex-col gap-4 shadow-xl scroll-mt-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#2d2d2d] pb-3 gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-500">
-              <Award className="w-5 h-5 stroke-[1.5]" />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
-                <span>ملف القضية التكنيكلي والوثائق الكنتورية المورثة</span>
-              </h3>
-              <p className="text-[11px] text-zinc-400 font-sans">تصفح الصفحات ٣ و ٤ و ٥ المخصصة بالترتيب القضائي، النيابي، والبلدي الأمني بالتزامن مع الرفوف آلياً</p>
-            </div>
+      <section id="judicial-document-anchor" className="mx-1 mt-2 mb-4 motif-window p-1 flex flex-col scroll-mt-6">
+        {/* Titlebar */}
+        <div className="motif-titlebar flex items-center justify-between px-2 py-1 h-7 select-none">
+          <div className="flex items-center gap-1.5">
+            <button className="w-4 h-4 bg-[#dfe1ec] border border-black shadow-[inset_1px_1px_0_#fff] flex items-center justify-center text-[8px] font-bold text-black active:shadow-[inset_1px_1px_0_#70738a] select-none">
+              <span className="w-2.5 h-0.5 bg-black block"></span>
+            </button>
+            <span className="text-[11px] font-bold text-white">Decree Editor - ملف التركات والقضايا الكنتورية المورثة</span>
           </div>
-          
-          {/* Paper Pages interactive switcher */}
-          <div className="flex items-center bg-zinc-950 p-1.5 rounded-lg border border-zinc-850 gap-1 select-none">
-            <button
-              onClick={() => setJudgeActivePage(3)}
-              className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${
-                judgeActivePage === 3
-                  ? "bg-amber-500 text-zinc-950 shadow-md font-black"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-800"
-              }`}
-            >
-              📜 الصفحة ٣ (التقرير القضائي)
-            </button>
-            <button
-              onClick={() => setJudgeActivePage(4)}
-              className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${
-                judgeActivePage === 4
-                  ? "bg-amber-500 text-zinc-950 shadow-md font-black"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-800"
-              }`}
-            >
-              🚨 الصفحة ٤ (مذكرة النيابة)
-            </button>
-            <button
-              onClick={() => setJudgeActivePage(5)}
-              className={`px-3 py-1 rounded text-[10px] font-bold transition-all ${
-                judgeActivePage === 5
-                  ? "bg-amber-500 text-zinc-950 shadow-md font-black"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-800"
-              }`}
-            >
-              👮 الصفحة ٥ (محاضر الشرطة والضبط)
-            </button>
+          <div className="flex items-center gap-1">
+            <button className="w-4 h-4 bg-[#dfe1ec] border border-black shadow-[inset_1px_1px_0_#fff] flex items-center justify-center text-[9px] font-extrabold text-black active:shadow-[inset_1px_1px_0_#70738a] select-none leading-none">.</button>
+            <button className="w-4 h-4 bg-[#dfe1ec] border border-black shadow-[inset_1px_1px_0_#fff] flex items-center justify-center text-[9px] font-extrabold text-black active:shadow-[inset_1px_1px_0_#70738a] select-none leading-none">▢</button>
           </div>
         </div>
+        
+        <div className="bg-[#dfe1ec] p-3 flex flex-col gap-3">
+          
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-400 pb-3 gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 bg-blue-800/10 border border-blue-800/20 rounded text-blue-900">
+                <Award className="w-5 h-5 stroke-[1.5]" />
+              </div>
+              <div>
+                <h3 className="text-xs font-bold text-zinc-900 tracking-tight flex items-center gap-2">
+                  <span>ملف القضية التكنيكلي والوثائق الكنتورية المورثة</span>
+                </h3>
+                <p className="text-[11px] text-zinc-650 font-sans">تصفح الصفحات ٣ و ٤ و ٥ المخصصة بالترتيب القضائي، النيابي، والبلدي الأمني بالتزامن مع الرفوف آلياً</p>
+              </div>
+            </div>
+            
+            {/* Paper Pages interactive switcher */}
+            <div className="flex items-center bg-[#cbd2e1] p-0.5 border border-zinc-400 gap-0.5 select-none shadow-[inset_1px_1px_1px_rgba(0,0,0,0.1)]">
+              <button
+                onClick={() => setJudgeActivePage(3)}
+                className={`px-3 py-1 border text-[10.5px] font-bold transition-all cursor-pointer ${
+                  judgeActivePage === 3
+                    ? "bg-[#dfe1ec] border-zinc-400 text-zinc-900 shadow-[inset_1.5px_1.5px_0_#fff] font-black"
+                    : "bg-[#cbd2e1] border-transparent text-zinc-700 hover:text-black hover:bg-[#b0b9cc]"
+                }`}
+              >
+                📜 الصفحة ٣ (التقرير القضائي)
+              </button>
+              <button
+                onClick={() => setJudgeActivePage(4)}
+                className={`px-3 py-1 border text-[10.5px] font-bold transition-all cursor-pointer ${
+                  judgeActivePage === 4
+                    ? "bg-[#dfe1ec] border-zinc-400 text-zinc-900 shadow-[inset_1.5px_1.5px_0_#fff] font-black"
+                    : "bg-[#cbd2e1] border-transparent text-zinc-700 hover:text-black hover:bg-[#b0b9cc]"
+                }`}
+              >
+                🚨 الصفحة ٤ (مذكرة النيابة)
+              </button>
+              <button
+                onClick={() => setJudgeActivePage(5)}
+                className={`px-3 py-1 border text-[10.5px] font-bold transition-all cursor-pointer ${
+                  judgeActivePage === 5
+                    ? "bg-[#dfe1ec] border-zinc-400 text-zinc-900 shadow-[inset_1.5px_1.5px_0_#fff] font-black"
+                    : "bg-[#cbd2e1] border-transparent text-zinc-700 hover:text-black hover:bg-[#b0b9cc]"
+                }`}
+              >
+                👮 الصفحة ٥ (محاضر الشرطة والضبط)
+              </button>
+            </div>
+          </div>
 
         {/* The parchment paper/court layout showing judge decree */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
@@ -2746,7 +2885,47 @@ export default function App() {
 
             {/* Render selected Page */}
             {judgeActivePage === 3 && (
-              activeCase === "hadayek" ? (
+              activeCase === "orouba" ? (
+                <div className="relative z-10 flex flex-col gap-4 text-right">
+                  {/* official header for page 3 (orouba) */}
+                  <div className="border-b-2 border-double border-zinc-400 pb-3 mb-2 flex items-center justify-between text-[11px] font-bold text-zinc-700">
+                    <div className="text-right leading-normal text-right">
+                      <p>مكتب الاستشارات القانونية والمساحية المشترك</p>
+                      <p>مستشار تقسيم وصياغة العقود - محافظة الجيزة</p>
+                    </div>
+                    <div className="text-left font-mono leading-normal text-right">
+                      <p>دراسة حالة: شقة العروبة الرئيسي - الطالبية / الهرم</p>
+                      <p>رأي المستشار: مخاطرة شديدة (غير موصى بالشراء)</p>
+                      <p>التاريخ: {new Date().toLocaleDateString("ar-EG")}</p>
+                    </div>
+                  </div>
+
+                  <h4 className="text-center font-bold text-md text-[#5c3e03] border-b border-amber-200 pb-2 tracking-wide font-serif">
+                    🛡️ تقرير التقييم والاستشارة القانونية لصفقة شقة شارع العروبة الرئيسي (منطقة المحولات)
+                  </h4>
+
+                  <div className="text-xs leading-loose text-zinc-800 font-serif text-right flex flex-col gap-3">
+                    <p>
+                      بناءً على طلب العميل، قمنا بإجراء بحث استقصائي مساحي وقانوني حول الشقة المعروضة بقيمة ١,٧٥٠,٠٠٠ ج.م بالفرش (مساحة ١٤٠م بالدور الخامس)، وفيما يلي منطوق الرأي الفني:
+                    </p>
+
+                    <div className="bg-amber-100/40 p-3 rounded-lg border border-amber-200/80 flex flex-col gap-1.5 font-sans text-[11px] leading-relaxed text-zinc-900">
+                      <p className="font-bold text-amber-950 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 bg-red-600 rounded-full shrink-0"></span>
+                        🚨 تحليل غياب التصالح والأثر القانوني (عالي المخاطر):
+                      </p>
+                      <p className="text-zinc-800 leading-normal">
+                        العبارة الواردة <b>"لا يوجد تصالح"</b> للدور الخامس في عمارة مبنية بدون تصريح، تمثل <b>تهديداً جوهرياً لسيولة واستقرار العقار</b> تماشياً مع قانون التصالح رقم ١٨٧ لسنة ٢٠٢٣. غياب نموذج التصالح النهائي يعرض المشتري لقرارات سحب العدادات أو فرض غرامات رخص الإشغال الكلية بواسطة حي الطالبية، ولا يمكن تمليك الشقة رسمياً بالشهر العقاري.
+                      </p>
+                    </div>
+
+                    <p className="font-bold text-zinc-950 text-xs mt-2 border-b border-zinc-200 pb-1.5 font-sans">📋 رأي الخبراء المالي والمساحي للفرصة:</p>
+                    <p className="text-zinc-800 text-[11px] font-sans leading-normal">
+                      السعر البالغ <b>١,٧٥٠,٠٠٠ ج.م بالفرش</b> منخفض ومغرٍ مقارنة بمتوسط أسعار المتر بشارع العروبة الرئيسي (١٤,٠٠٠ - ١٦,٠٠٠ ج.م لـ ١٤٠م حوالي ٢ مليون). ولكن هذا الانخفاض يعوض القلق القانوني وغياب الترخيص. نوصي بـ <b>صرف النظر تماماً عن الشراء</b> أو تعليق التوقيع طالما لم يلتزم البائع بتقديم نموذج جدية التصالح وعقد مسجل للتركة التاريخية.
+                    </p>
+                  </div>
+                </div>
+              ) : activeCase === "hadayek" ? (
                 <div className="relative z-10 flex flex-col gap-4 text-right">
                   {/* official header for page 3 (hadayek) */}
                   <div className="border-b-2 border-double border-zinc-400 pb-3 mb-2 flex items-center justify-between text-[11px] font-bold text-zinc-700">
@@ -2835,7 +3014,49 @@ export default function App() {
             )}
 
             {judgeActivePage === 4 && (
-              activeCase === "hadayek" ? (
+              activeCase === "orouba" ? (
+                <div className="relative z-10 flex flex-col gap-4 text-right">
+                  {/* official header for page 4 (orouba) */}
+                  <div className="border-b-2 border-double border-red-300 pb-3 mb-2 flex items-center justify-between text-[11px] font-bold text-red-900">
+                    <div className="text-right leading-normal text-right">
+                      <p>نيابة العمرانية والشهر العقاري والجيزة</p>
+                      <p>مكتب فحص المنازعات الحيازية والدعاوى</p>
+                    </div>
+                    <div className="text-left font-mono leading-normal text-red-750 text-right">
+                      <p>مراجعة الدعاوى والملكيات السابقة</p>
+                      <p>القضايا: ١١٤٦٥ لسنة ٢٠١٧ صحة توقيع</p>
+                      <p>الحالة الجارية: سلسلة غير مسجلة نهائياً</p>
+                    </div>
+                  </div>
+
+                  <h4 className="text-center font-bold text-md text-red-950 border-b border-red-200 pb-2 tracking-wide font-serif">
+                    🔍 دراسة سلسلة قضايا صحة التوقيع المتتالية والنزاع الوراثي لشقة العروبة
+                  </h4>
+
+                  <div className="text-xs leading-loose text-zinc-800 font-serif text-right flex flex-col gap-3">
+                    <p>
+                      من فحص أوراق الحيازة وتسلسل العقود العرفية وسجلات جدول محكمة العمرانية الجزئية المتاحة يتضح الآتي:
+                    </p>
+
+                    <div className="bg-red-50 p-3.5 rounded-lg border border-red-200 flex flex-col gap-1.5 font-sans text-[11px] leading-relaxed text-zinc-900">
+                      <p className="font-bold text-red-950 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 bg-red-650 rounded-full shrink-0"></span>
+                        ⚖️ عيوب أحكام صحة التوقيع (١٢٠١٧ و ٢٠٢٠):
+                      </p>
+                      <p className="text-zinc-800 leading-normal">
+                        * أولاً: الدعوى رقم ١١٤٦٥ لسنة ٢٠١٧ صحة توقيع العمرانية المقامة بشأن عقد البيع من محمد دسوقي إبراهيم إلى إبراهيم عبد الرحمن درويش وثبتت توقيعه. <b>حكم صحة التوقيع هو حكم تحفظي شكلي</b> لا يتصدى لموضوع الملكية أو شروط التعاقد.<br />
+                        * ثانياً: النزاع التالي عام ٢٠٢٠ الصادر من السيدة إنسان أحمد درويش ضد أحمد درويش لإثبات صحة توقيع عقد سنة ١٩٩٨ يثبت وجود تلاعب في الحصص الشائعة للأرض وتواطؤ لتمرير الهبة دون إخطار باق ورثة عائلة درويش، مما يمنحهم حق المطالبة القضائية مستقبلاً بالبطلان أو شفعة حصص الأرض.
+                      </p>
+                    </div>
+
+                    <p className="font-bold text-red-950 text-xs mt-2 border-b border-red-200 pb-1.5 font-sans">📋 تتبع الثبوت وتأسيس ملكية الأرض:</p>
+                    <ul className="list-disc list-inside pr-1 text-zinc-950 font-bold flex flex-col gap-1.5 text-[11px] font-sans">
+                      <li>البائع محمد دسوقي إبراهيم يستند إلى شراء عرفي مؤرخ ١/١٢/١٩٩٥ من أحمد دسوقي إبراهيم، ولم يتم تقديم أصل هذا العقد للحي، مما يجعل السلسلة بأكملها فاقدة لحجيتها التاريخية القاطعة ومخالفة لقواعد الشهر العقاري.</li>
+                      <li>حصة الأرض المسماة بـ '١٤٠ متر حصة شائعة' تعتبر حصة نظرية مهددة للتراجع حال قيام ورثة درويش بإظهار دعوى منع حيازة أو تقييد التصرفات بجدول المحكمة.</li>
+                    </ul>
+                  </div>
+                </div>
+              ) : activeCase === "hadayek" ? (
                 <div className="relative z-10 flex flex-col gap-4 text-right">
                   {/* official header for page 4 (hadayek) */}
                   <div className="border-b-2 border-double border-red-300 pb-3 mb-2 flex items-center justify-between text-[11px] font-bold text-red-900">
@@ -2924,49 +3145,134 @@ export default function App() {
             )}
 
             {judgeActivePage === 5 && (
-              <div className="relative z-10 flex flex-col gap-4">
-                
-                {/* official header for page 5 */}
-                <div className="border-b-2 border-double border-blue-300 pb-3 mb-2 flex items-center justify-between text-[11px] font-bold text-blue-900">
-                  <div className="text-right leading-normal">
-                    <p>وزارة الداخلية المصرية</p>
-                    <p>مديرية أمن القاهرة - قطاع الأمن العام</p>
-                    <p>قسم شرطة القاهرة الجديدة - مأمورية الضبط الجبري</p>
+              activeCase === "orouba" ? (
+                <div className="relative z-10 flex flex-col gap-4 text-right">
+                  {/* official header for page 5 (orouba) */}
+                  <div className="border-b-2 border-double border-blue-300 pb-3 mb-2 flex items-center justify-between text-[11px] font-bold text-blue-900">
+                    <div className="text-right leading-normal text-right">
+                      <p>وزارة الداخلية المصرية</p>
+                      <p>مديرية أمن الجيزة - قطاع غرب (الهرم)</p>
+                      <p>قسم شرطة الطالبية - مبادرة تفتيش مخالفات البناء</p>
+                    </div>
+                    <div className="text-left font-mono leading-normal text-blue-700 text-right">
+                      <p>رقم مأمورية الضبط: ٤٥٦٣-علم</p>
+                      <p>الصفحة النشطة: الصفحة ٥ (محضر الضبط الطالبية)</p>
+                      <p>قوة التأمين: دورية تفتيش الأحياء</p>
+                    </div>
                   </div>
-                  <div className="text-left font-mono leading-normal text-blue-700">
-                    <p>رقم مأمورية الضبط: 821-أمن</p>
-                    <p>الصفحة النشطة: الصفحة ٥ (الداخلية والشرطة)</p>
-                    <p>قوة التأمين: جاهزة ومستطلعة</p>
+
+                  <h3 className="text-center font-bold text-md text-blue-950 border-b border-blue-200 pb-2 tracking-wide font-serif">
+                    🛡️ محضر المعاينة الميدانية للضبط الإداري وإجراءات إغلاق الشقق المخالفة بـ العروبة
+                  </h3>
+
+                  <div className="text-xs leading-loose text-zinc-800 font-serif text-right flex flex-col gap-3">
+                    <p>
+                      انتقل مهندسو تنظيم حي الطالبية برفقة قوة أمنية وقاموا بمطابقة حالة المبنى الواقع بـ ٢٣٩ شارع العروبة الرئيسي (منطقة المحولات)، وسطروا النتائج التالية للضبط:
+                    </p>
+
+                    <div className="bg-blue-50 p-3.5 rounded-lg border border-blue-200 flex flex-col gap-1.5 font-sans text-[11px] leading-relaxed text-zinc-900">
+                      <p className="font-bold text-blue-950 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
+                        🚨 تقرير الضبط الميداني للبلدية والكهرباء:
+                      </p>
+                      <p className="text-zinc-800 leading-normal">
+                        تبين أن المبنى مكون من أرضي و ١٢ دوراً متكرراً، والترخيص الأساسي يغطي فقط الأرضي حتى الدور الرابع. أما الأدوار من الخامس حتى الثاني عشر فتعد <b>أدواراً مخالفة تماماً لعدم استيفاء اشتراطات الحماية المدنية وخطوط التنظيم</b>. وبسبب تعنت البائع بعدم تقديم طلب التصالح، صدر قرار المحافظ رقم ٤٨٢١ بإغلاق الشقة الكائنة بالدور الخامس بالشمع الأحمر، ورفع عدادات الكهرباء والماء فوراً وفرض الحظر الإنشائي لحين سداد الغرامات.
+                      </p>
+                    </div>
+
+                    <p className="font-bold text-[#1e3a8a] text-xs mt-2 border-b border-blue-200 pb-1.5 font-sans">👮 الإجراء الأمني الاحترازي الفوري المقترح:</p>
+                    <ol className="list-decimal list-inside pr-1 text-zinc-950 font-bold flex flex-col gap-1.5 text-[11px] font-sans">
+                      <li>تجميد أي تعاملات نقل ملكية أو تغيير لأسماء شاغلي العقار بالحي، وعمل جنحة مباشرة ضد مالك العقار والمقاول القائم بالبناء.</li>
+                      <li>إمهال البائع الحالي أو المشتري مدة لا تتجاوز ٣٠ يوماً للبدء في إجراءات التصالح الاستثنائي عبر نقابة المهنيين ومجلس الوزراء، وإلا يعتبر القرار نافذاً بقطع المرافق بصورة دائمة.</li>
+                    </ol>
                   </div>
                 </div>
-
-                <h4 className="text-center font-bold text-md text-blue-950 border-b border-blue-200 pb-2 tracking-wide font-serif">
-                  [الصفحة ٥] محضر معاينة قسم الشرطة وقرار الإزالة المباشرة بالقوة العسكرية
-                </h4>
-
-                <div className="text-xs leading-loose text-zinc-800 font-serif text-right flex flex-col gap-3">
-                  <p>
-                    بناءً على طلب النيابة العامة وقرار السيد محافظ القاهرة لإزالة المباني المخالفة وغير الحائزة على شهادة صلاحية الأشغال والتراخيص الصادرة من مصلحة التنظيم الهندسي بمحاضر الإسكان والمرافق لمدينة القاهرة الجديدة:
-                  </p>
-
-                  <div className="bg-blue-50 p-3.5 rounded-lg border border-blue-200 flex flex-col gap-1.5 font-sans text-[11px] leading-relaxed text-zinc-900">
-                    <p className="font-bold text-blue-950 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
-                      محضر معاينة ضابط الواقعة وقسم الشرطة:
-                    </p>
-                    <p className="text-zinc-800">
-                      بموجب محضر الضبط المحرر بوزارة الداخلية، وبالموازاة مع خطة امتداد المرافق، تثبت مخالفة البناء بدون تصاريح هندسية، مما يوجب ملاحقة العمل الإنشائي العشوائي وهدم العقار جزئياً دون معارضة الحيازة الشرعية المسجلة.
-                    </p>
+              ) : activeCase === "hadayek" ? (
+                <div className="relative z-10 flex flex-col gap-4 text-right">
+                  {/* official header for page 5 (hadayek) */}
+                  <div className="border-b-2 border-double border-blue-300 pb-3 mb-2 flex items-center justify-between text-[11px] font-bold text-blue-900">
+                    <div className="text-right leading-normal text-right">
+                      <p>وزارة الداخلية المصرية</p>
+                      <p>مديرية أمن الجيزة - قطاع الهرم</p>
+                      <p>نقطة حدائق الأهرام - وحدة الحيازة وتنظيم الملاك</p>
+                    </div>
+                    <div className="text-left font-mono leading-normal text-blue-700 text-right">
+                      <p>رقم مأمورية الضبط: ١٠٢٤-أمن</p>
+                      <p>الصفحة النشطة: الصفحة ٥ (معاينة حدائق الأهرام)</p>
+                      <p>الحالة الأمنية: مستقرة ومؤمنة</p>
+                    </div>
                   </div>
 
-                  <p className="font-bold text-[#1e3a8a] text-xs mt-2 border-b border-blue-200 pb-1.5">الإقرار الأمني والبلدي للتنفيذ المباشر:</p>
+                  <h3 className="text-center font-bold text-md text-blue-950 border-b border-blue-200 pb-2 tracking-wide font-serif">
+                    🛡️ محضر المعاينة الأمنية وسجل النفع الخاص للعقار ٧٢ ز - البوابة الثالثة
+                  </h3>
+
+                  <div className="text-xs leading-loose text-zinc-800 font-serif text-right flex flex-col gap-3">
+                    <p>
+                      تلبيةً لطلب التفتيش والمعاينة للتأكد الحيازي، تم مراجعة الشقة الأرضي بحديقة بالقطعة ٧٢ ز بحدائق الأهرام، وسجل محضر الشرطة الآتي:
+                    </p>
+
+                    <div className="bg-blue-50 p-3.5 rounded-lg border border-blue-200 flex flex-col gap-1.5 font-sans text-[11px] leading-relaxed text-zinc-900">
+                      <p className="font-bold text-blue-950 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
+                        🏡 إفادة المعاينة الميدانية للشقة والحديقة:
+                      </p>
+                      <p className="text-zinc-800 leading-normal">
+                        الشقة مزودة بـ <b>عداد كهرباء كارت يغطي الاستهلاك المستقل للفروع الثلاثة</b>. كما تلاحظ وجود سور يحيط بالحديقة الجانبية المذكورة مسبقاً بشكل مغلق وآمن هندسياً، مع وجود ممر جانبي مخصص لمنع الاحتكاك بجيران الشواغر الخلفية. نظام المياه عمومي وتابع لعداد العمارة الموحد بالتزام شهري هادئ وبلا نزاعات سابقة.
+                      </p>
+                    </div>
+
+                    <p className="font-bold text-[#1e3a8a] text-xs mt-2 border-b border-blue-200 pb-1.5 font-sans">👮 قرار المعاينة والحيازة:</p>
+                    <ol className="list-decimal list-inside pr-1 text-zinc-950 font-bold flex flex-col gap-1.5 text-[11px] font-sans">
+                      <li>إثبات استقرار الحيازة العينية الهادئة للمشتري الجديد فور كتابة العقد دون أي اعتراضات تذكر من ملاك العمارة.</li>
+                    </ol>
+                  </div>
+                </div>
+              ) : (
+                <div className="relative z-10 flex flex-col gap-4">
                   
-                  <ol className="list-decimal list-inside pr-1 text-zinc-950 font-bold flex flex-col gap-1.5">
-                    <li>إرسال مأمورية مدعومة بمدرعة لإنفاذ قرار إزالة السور المخالف الفاصل وتأمين مهندسي المساحة أثناء تثبيت الأوتاد الكنتورية.</li>
-                    <li>منع المشكو في حقه محمود رضوان وعماله من التعرض مجدداً لقطعة الأرض رقم 102 التابعة لـ أحمد البشري، ونقل الركام لجانب الطريق.</li>
-                  </ol>
+                  {/* official header for page 5 */}
+                  <div className="border-b-2 border-double border-blue-300 pb-3 mb-2 flex items-center justify-between text-[11px] font-bold text-blue-900">
+                    <div className="text-right leading-normal">
+                      <p>وزارة الداخلية المصرية</p>
+                      <p>مديرية أمن القاهرة - قطاع الأمن العام</p>
+                      <p>قسم شرطة القاهرة الجديدة - مأمورية الضبط الجبري</p>
+                    </div>
+                    <div className="text-left font-mono leading-normal text-blue-700">
+                      <p>رقم مأمورية الضبط: 821-أمن</p>
+                      <p>الصفحة النشطة: الصفحة ٥ (الداخلية والشرطة)</p>
+                      <p>قوة التأمين: جاهزة ومستطلعة</p>
+                    </div>
+                  </div>
+
+                  <h4 className="text-center font-bold text-md text-blue-950 border-b border-blue-200 pb-2 tracking-wide font-serif">
+                    [الصفحة ٥] محضر معاينة قسم الشرطة وقرار الإزالة المباشرة بالقوة العسكرية
+                  </h4>
+
+                  <div className="text-xs leading-loose text-zinc-800 font-serif text-right flex flex-col gap-3">
+                    <p>
+                      بناءً على طلب النيابة العامة وقرار السيد محافظ القاهرة لإزالة المباني المخالفة وغير الحائزة على شهادة صلاحية الأشغال والتراخيص الصادرة من مصلحة التنظيم الهندسي بمحاضر الإسكان والمرافق لمدينة القاهرة الجديدة:
+                    </p>
+
+                    <div className="bg-blue-50 p-3.5 rounded-lg border border-blue-200 flex flex-col gap-1.5 font-sans text-[11px] leading-relaxed text-zinc-900">
+                      <p className="font-bold text-blue-950 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                        محضر معاينة ضابط الواقعة وقسم الشرطة:
+                      </p>
+                      <p className="text-zinc-800">
+                        بموجب محضر الضبط المحرر بوزارة الداخلية، وبالموازاة مع خطة امتداد المرافق، تثبت مخالفة البناء بدون تصاريح هندسية، مما يوجب ملاحقة العمل الإنشائي العشوائي وهدم العقار جزئياً دون معارضة الحيازة الشرعية المسجلة.
+                      </p>
+                    </div>
+
+                    <p className="font-bold text-[#1e3a8a] text-xs mt-2 border-b border-blue-200 pb-1.5">الإقرار الأمني والبلدي للتنفيذ المباشر:</p>
+                    
+                    <ol className="list-decimal list-inside pr-1 text-zinc-950 font-bold flex flex-col gap-1.5">
+                      <li>إرسال مأمورية مدعومة بمدرعة لإنفاذ قرار إزالة السور المخالف الفاصل وتأمين مهندسي المساحة أثناء تثبيت الأوتاد الكنتورية.</li>
+                      <li>منع المشكو في حقه محمود رضوان وعماله من التعرض مجدداً لقطعة الأرض رقم 102 التابعة لـ أحمد البشري، ونقل الركام لجانب الطريق.</li>
+                    </ol>
+                  </div>
                 </div>
-              </div>
+              )
             )}
 
             {/* Seals and stamps formatting */}
@@ -3078,6 +3384,7 @@ export default function App() {
           </div>
 
         </div>
+        </div> {/* Closes the bg-[#dfe1ec] p-3 flex flex-col gap-3 wrapper */}
       </section>
 
       {/* ================= 5. AUTODESK MAYA TIMELINE INTERACTIVE PANELS (Bottom Bar) ================= */}
